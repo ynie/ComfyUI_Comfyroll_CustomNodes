@@ -56,7 +56,8 @@ class CR_ApplyControlNet:
 class CR_ControlNetStack:
 
     controlnets = ["None"] + folder_paths.get_filename_list("controlnet")
-    
+    cached_controlnet_mapping = {}
+
     @classmethod
     def INPUT_TYPES(cls):
         #controlnets = ["None"]
@@ -106,17 +107,32 @@ class CR_ControlNetStack:
         
         if controlnet_1 != "None" and  switch_1 == "On" and image_1 is not None:
             controlnet_path = folder_paths.get_full_path("controlnet", controlnet_1)
-            controlnet_1 = comfy.controlnet.load_controlnet(controlnet_path)
+            controlnet_1 = self.cached_controlnet_mapping.get(controlnet_path)
+            if controlnet_1 is None:
+                controlnet_1 = comfy.controlnet.load_controlnet(controlnet_path)
+                self.cached_controlnet_mapping[controlnet_path] = controlnet_1
+                print(f"Loading control net from {controlnet_path}")
+
             controlnet_list.extend([(controlnet_1, image_1, controlnet_strength_1, start_percent_1, end_percent_1)]),
 
         if controlnet_2 != "None" and  switch_2 == "On" and image_2 is not None:
             controlnet_path = folder_paths.get_full_path("controlnet", controlnet_2)
-            controlnet_2 = comfy.controlnet.load_controlnet(controlnet_path)
+            controlnet_2 = self.cached_controlnet_mapping.get(controlnet_path)
+            if controlnet_2 is None:
+                controlnet_2 = comfy.controlnet.load_controlnet(controlnet_path)
+                self.cached_controlnet_mapping[controlnet_path] = controlnet_2
+                print(f"Loading control net from {controlnet_path}")
+
             controlnet_list.extend([(controlnet_2, image_2, controlnet_strength_2, start_percent_2, end_percent_2)]),
 
         if controlnet_3 != "None" and  switch_3 == "On" and image_3 is not None:
             controlnet_path = folder_paths.get_full_path("controlnet", controlnet_3)
-            controlnet_3 = comfy.controlnet.load_controlnet(controlnet_path)
+            controlnet_3 = self.cached_controlnet_mapping.get(controlnet_path)
+            if controlnet_3 is None:
+                controlnet_3 = comfy.controlnet.load_controlnet(controlnet_path)
+                self.cached_controlnet_mapping[controlnet_path] = controlnet_3
+                print(f"Loading control net from {controlnet_path}")
+
             controlnet_list.extend([(controlnet_3, image_3, controlnet_strength_3, start_percent_3, end_percent_3)]),
 
         show_help = "https://github.com/Suzie1/ComfyUI_Comfyroll_CustomNodes/wiki/ControlNet-Nodes#cr-multi-controlnet-stack"
